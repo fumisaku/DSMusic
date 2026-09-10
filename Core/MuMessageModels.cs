@@ -96,6 +96,14 @@ public class MuPlayTimeSetting
     [JsonProperty("PasoFullSeconds")] public double? PasoFullSeconds { get; set; }
 }
 
+// MU_NOTIFY_EXTEND ペイロード（演奏時間延長・短縮）
+public class MuNotifyExtendPayload
+{
+    [JsonProperty("OrgCd")]       public string OrgCd       { get; set; } = "";
+    [JsonProperty("CmpNo")]       public string CmpNo       { get; set; } = "";
+    [JsonProperty("DeltaSeconds")] public int   DeltaSeconds { get; set; }
+}
+
 // MU_STATUS 送信ペイロード
 public class MuStatusPayload
 {

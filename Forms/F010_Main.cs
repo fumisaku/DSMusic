@@ -65,6 +65,7 @@ public partial class F010_Main : Form
         _webSocketService.NotifyBgmStopReceived += OnNotifyBgmStopReceived;
         _webSocketService.HeatNotifyReceived += OnHeatNotifyReceived;
         _webSocketService.NotifyPlayTimeReceived += OnNotifyPlayTimeReceived;
+        _webSocketService.NotifyExtendReceived   += OnNotifyExtendReceived;
     }
 
     private void F010_Main_Load(object sender, EventArgs e)
@@ -117,6 +118,7 @@ public partial class F010_Main : Form
         _webSocketService.NotifyBgmStopReceived -= OnNotifyBgmStopReceived;
         _webSocketService.HeatNotifyReceived -= OnHeatNotifyReceived;
         _webSocketService.NotifyPlayTimeReceived -= OnNotifyPlayTimeReceived;
+        _webSocketService.NotifyExtendReceived   -= OnNotifyExtendReceived;
 
         timerPlayback.Stop();
         _playController.Dispose();
@@ -703,8 +705,8 @@ public partial class F010_Main : Form
                 }
                 else
                 {
-                    var playTimeSetting = _assignService.FindPlayTimeSetting(_settingsService.Current, _playController.CurrentHeat.DncCd, _playController.CurrentHeat.KbnNo, _playController.CurrentHeat.RndNo);
-                    double targetSec = playTimeSetting?.PlaySeconds ?? 90.0;
+                    // _targetPlaySeconds を参照することで +5秒/-5秒の変更をリアルタイムに反映
+                    double targetSec = _playController.TargetPlaySeconds;
 
                     lblTimeProgress.Text = $"{elapsed:mm\\:ss} / {TimeSpan.FromSeconds(targetSec):mm\\:ss}";
 
@@ -756,6 +758,9 @@ public partial class F010_Main : Form
 
     private void UpdatePlayControlUi()
     {
+        bool canExtend = _playController.State == PlayState.Playing ||
+                         _playController.State == PlayState.Paused;
+
         switch (_playController.State)
         {
             case PlayState.Idle:
@@ -786,6 +791,9 @@ public partial class F010_Main : Form
                 btnEndWithFadeOut.Enabled = true;
                 break;
         }
+
+        btnExtendPlus5.Enabled  = canExtend;
+        btnExtendMinus5.Enabled = canExtend;
     }
 
     private void UpdateWsStateLabel(ConnectionState state)
@@ -941,6 +949,22 @@ public partial class F010_Main : Form
         {
             await _webSocketService.SendGmAskDsAsync(_dsStatus.OrgCd, _dsStatus.CompNo);
         });
+    }
+
+    private void OnNotifyExtendReceived(MuNotifyExtendPayload p)
+    {
+        if (this.IsDisposed) return;
+        this.BeginInvoke(() => _playController.ExtendPlayTime(p.DeltaSeconds));
+    }
+
+    private void btnExtendPlus5_Click(object sender, EventArgs e)
+    {
+        _playController.ExtendPlayTime(5);
+    }
+
+    private void btnExtendMinus5_Click(object sender, EventArgs e)
+    {
+        _playController.ExtendPlayTime(-5);
     }
 
     private void OnNotifyPlayTimeReceived(MuNotifyPlayTimePayload p)

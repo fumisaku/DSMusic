@@ -33,6 +33,7 @@ public class PlayController : IDisposable
 
     private System.Threading.Timer? _playTimer;
     private double _targetPlaySeconds = 90.0;
+    public double TargetPlaySeconds => _targetPlaySeconds;
     private bool _disposed;
 
     public PlayController(
@@ -233,6 +234,40 @@ public class PlayController : IDisposable
             State = PlayState.Idle;
             SendStatusUpdate();
         });
+    }
+
+    /// <summary>
+    /// 演奏時間を deltaSeconds 秒だけ延長（正の値）または短縮（負の値）する。
+    /// 演奏中・一時停止中のみ有効。最短は現在の経過秒数+1秒まで短縮可能。
+    /// </summary>
+    public void ExtendPlayTime(int deltaSeconds)
+    {
+        if (State != PlayState.Playing && State != PlayState.Paused) return;
+        if (_currentHeat == null || _currentHeat.DncCd == "P") return;
+
+        double elapsed = _playbackEngine.CompetitionElapsed.TotalSeconds;
+        double newTarget = _targetPlaySeconds + deltaSeconds;
+
+        // 最低でも経過+1秒は確保（負のタイマーを防ぐ）
+        if (newTarget < elapsed + 1.0) newTarget = elapsed + 1.0;
+        _targetPlaySeconds = newTarget;
+
+        // 演奏中の場合はタイマーを再設定する
+        if (State == PlayState.Playing)
+        {
+            CancelTimer();
+            double fadeOutSec = _settingsService.Current.FadeOutSeconds;
+            double remaining = _targetPlaySeconds - elapsed - fadeOutSec;
+            if (remaining <= 0)
+            {
+                EndWithFadeOut();
+                return;
+            }
+            _playTimer = new System.Threading.Timer(OnPlayTimerExpired, null, TimeSpan.FromSeconds(remaining), Timeout.InfiniteTimeSpan);
+        }
+
+        // MU_STATUS を送信して DSMc 側のプログレスバーを更新
+        SendStatusUpdate();
     }
 
     public void StopImmediate()

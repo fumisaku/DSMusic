@@ -30,6 +30,7 @@ public class WebSocketService : IDisposable
     public event Action<ConnectionState>? StateChanged;
     public event Action? HeatNotifyReceived;
     public event Action<MuNotifyPlayTimePayload>? NotifyPlayTimeReceived;
+    public event Action<MuNotifyExtendPayload>? NotifyExtendReceived;
 
     private readonly SettingsService _settingsService;
     private ClientWebSocket? _ws;
@@ -288,6 +289,12 @@ public class WebSocketService : IDisposable
                     {
                         var p = JsonConvert.DeserializeObject<MuNotifyPlayTimePayload>(jsonPayload);
                         if (p != null) NotifyPlayTimeReceived?.Invoke(p);
+                        break;
+                    }
+                case "MU_NOTIFY_EXTEND":
+                    {
+                        var p = JsonConvert.DeserializeObject<MuNotifyExtendPayload>(jsonPayload);
+                        if (p != null) NotifyExtendReceived?.Invoke(p);
                         break;
                     }
             }

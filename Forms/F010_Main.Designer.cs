@@ -29,6 +29,8 @@ namespace DSMusic.Forms
             this.btnEndWithFadeOut = new System.Windows.Forms.Button();
             this.btnEmergencyStop = new System.Windows.Forms.Button();
             this.btnPlayStart = new System.Windows.Forms.Button();
+            this.btnExtendPlus5 = new System.Windows.Forms.Button();
+            this.btnExtendMinus5 = new System.Windows.Forms.Button();
             this.prgPlayback = new System.Windows.Forms.ProgressBar();
             this.lblTimeProgress = new System.Windows.Forms.Label();
             this.lblSongDetails = new System.Windows.Forms.Label();
@@ -142,6 +144,8 @@ namespace DSMusic.Forms
             this.pnlPlayControl.BackColor = System.Drawing.Color.WhiteSmoke;
             this.pnlPlayControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlPlayControl.Controls.Add(this.vuMeter);
+            this.pnlPlayControl.Controls.Add(this.btnExtendPlus5);
+            this.pnlPlayControl.Controls.Add(this.btnExtendMinus5);
             this.pnlPlayControl.Controls.Add(this.btnEndWithFadeOut);
             this.pnlPlayControl.Controls.Add(this.btnEmergencyStop);
             this.pnlPlayControl.Controls.Add(this.btnPlayStart);
@@ -164,7 +168,7 @@ namespace DSMusic.Forms
             this.vuMeter.BackColor = System.Drawing.Color.FromArgb(24, 24, 24);
             // 
             // btnEndWithFadeOut
-            // 
+            //
             this.btnEndWithFadeOut.Location = new System.Drawing.Point(330, 100);
             this.btnEndWithFadeOut.Name = "btnEndWithFadeOut";
             this.btnEndWithFadeOut.Size = new System.Drawing.Size(120, 35);
@@ -172,6 +176,28 @@ namespace DSMusic.Forms
             this.btnEndWithFadeOut.Text = "⏏ 曲終了";
             this.btnEndWithFadeOut.UseVisualStyleBackColor = true;
             this.btnEndWithFadeOut.Click += new System.EventHandler(this.btnEndWithFadeOut_Click);
+            //
+            // btnExtendPlus5
+            //
+            this.btnExtendPlus5.Enabled = false;
+            this.btnExtendPlus5.Location = new System.Drawing.Point(460, 100);
+            this.btnExtendPlus5.Name = "btnExtendPlus5";
+            this.btnExtendPlus5.Size = new System.Drawing.Size(80, 35);
+            this.btnExtendPlus5.TabIndex = 7;
+            this.btnExtendPlus5.Text = "+5秒";
+            this.btnExtendPlus5.UseVisualStyleBackColor = true;
+            this.btnExtendPlus5.Click += new System.EventHandler(this.btnExtendPlus5_Click);
+            //
+            // btnExtendMinus5
+            //
+            this.btnExtendMinus5.Enabled = false;
+            this.btnExtendMinus5.Location = new System.Drawing.Point(550, 100);
+            this.btnExtendMinus5.Name = "btnExtendMinus5";
+            this.btnExtendMinus5.Size = new System.Drawing.Size(80, 35);
+            this.btnExtendMinus5.TabIndex = 8;
+            this.btnExtendMinus5.Text = "-5秒";
+            this.btnExtendMinus5.UseVisualStyleBackColor = true;
+            this.btnExtendMinus5.Click += new System.EventHandler(this.btnExtendMinus5_Click);
             // 
             // btnEmergencyStop
             // 
@@ -395,6 +421,8 @@ namespace DSMusic.Forms
         private System.Windows.Forms.Button btnPlayStart;
         private System.Windows.Forms.Button btnEmergencyStop;
         private System.Windows.Forms.Button btnEndWithFadeOut;
+        private System.Windows.Forms.Button btnExtendPlus5;
+        private System.Windows.Forms.Button btnExtendMinus5;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.DataGridView dgvHeats;
         private System.Windows.Forms.Panel pnlBgmSe;
