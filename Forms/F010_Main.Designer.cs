@@ -180,7 +180,7 @@ namespace DSMusic.Forms
             // btnExtendPlus5
             //
             this.btnExtendPlus5.Enabled = false;
-            this.btnExtendPlus5.Location = new System.Drawing.Point(460, 100);
+            this.btnExtendPlus5.Location = new System.Drawing.Point(1100, 100);
             this.btnExtendPlus5.Name = "btnExtendPlus5";
             this.btnExtendPlus5.Size = new System.Drawing.Size(80, 35);
             this.btnExtendPlus5.TabIndex = 7;
@@ -191,7 +191,7 @@ namespace DSMusic.Forms
             // btnExtendMinus5
             //
             this.btnExtendMinus5.Enabled = false;
-            this.btnExtendMinus5.Location = new System.Drawing.Point(550, 100);
+            this.btnExtendMinus5.Location = new System.Drawing.Point(1185, 100);
             this.btnExtendMinus5.Name = "btnExtendMinus5";
             this.btnExtendMinus5.Size = new System.Drawing.Size(80, 35);
             this.btnExtendMinus5.TabIndex = 8;
