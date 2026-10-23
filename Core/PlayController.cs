@@ -107,24 +107,33 @@ public class PlayController : IDisposable
             heat.PlayStartTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             _assignService.Save();
 
+            // _targetPlaySeconds を先に確定してから SendStatusUpdate() を呼ぶ
+            // （送信時に正しい TotalSeconds が使われるようにするため）
+            var playTimeSetting = _assignService.FindPlayTimeSetting(_settingsService.Current, heat.DncCd, heat.KbnNo, heat.RndNo);
+            if (heat.DncCd != "P")
+            {
+                _targetPlaySeconds = playTimeSetting?.PlaySeconds ?? 90.0;
+            }
+            else
+            {
+                // パソドブレはパターンに応じた秒数を設定（DSMcのプログレスバー表示用）
+                var pasoPattern = playTimeSetting?.PasoPattern ?? "2ndHighlight";
+                _targetPlaySeconds = pasoPattern == "FullChorus"
+                    ? (playTimeSetting?.PasoFullSeconds ?? 0.0)
+                    : (playTimeSetting?.Paso2ndSeconds ?? 0.0);
+            }
+
             State = PlayState.Playing;
             SendStatusUpdate();
 
             // P (Paso) 以外はタイマー設定
             if (heat.DncCd != "P")
             {
-                var playTimeSetting = _assignService.FindPlayTimeSetting(_settingsService.Current, heat.DncCd, heat.KbnNo, heat.RndNo);
-                _targetPlaySeconds = playTimeSetting?.PlaySeconds ?? 90.0;
-
                 double fadeOutSec = _settingsService.Current.FadeOutSeconds;
                 double timerSec = _targetPlaySeconds - fadeOutSec;
                 if (timerSec < 0) timerSec = 0;
 
                 _playTimer = new System.Threading.Timer(OnPlayTimerExpired, null, TimeSpan.FromSeconds(timerSec), Timeout.InfiniteTimeSpan);
-            }
-            else
-            {
-                _targetPlaySeconds = 0.0; // P has no fixed target seconds unless finished
             }
         }
         catch (Exception ex)
@@ -306,6 +315,12 @@ public class PlayController : IDisposable
             payload.HeatNo   = _currentHeat.HeatNo;
             payload.ElapsedSeconds = _playbackEngine.CompetitionElapsed.TotalSeconds;
             payload.TotalSeconds   = _targetPlaySeconds;
+            // パソドブレ（P）は TotalSeconds=0 なのでテキストラベルも送信する
+            if (_currentHeat.DncCd == "P")
+            {
+                var pts = _assignService.FindPlayTimeSetting(_settingsService.Current, "P", _currentHeat.KbnNo, _currentHeat.RndNo);
+                payload.PlayTimeLabel = (pts?.PasoPattern == "FullChorus") ? "P:Full" : "P:2ndHL";
+            }
         }
 
         _ = _webSocketService.SendMuStatusAsync(payload);

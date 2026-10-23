@@ -109,6 +109,8 @@ public partial class F020_Settings : Form
         dgvPlayTime.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "RndNo", HeaderText = "ラウンド", Width = 60 });
         dgvPlayTime.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "PlaySeconds", HeaderText = "演奏秒数 (P以外)", Width = 120 });
         dgvPlayTime.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "PasoPattern", HeaderText = "Pasoパターン (2nd/Full)", Width = 150 });
+        dgvPlayTime.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Paso2ndSeconds", HeaderText = "P:2nd秒数", Width = 80 });
+        dgvPlayTime.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "PasoFullSeconds", HeaderText = "P:Full秒数", Width = 80 });
     }
 
     private void SetupAssignRulesGrid()

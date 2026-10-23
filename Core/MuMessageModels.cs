@@ -125,5 +125,7 @@ public class MuStatusPayload
     [JsonProperty("HeatNo")]         public int?    HeatNo         { get; set; }
     [JsonProperty("ElapsedSeconds")] public double? ElapsedSeconds { get; set; }
     [JsonProperty("TotalSeconds")]   public double? TotalSeconds   { get; set; }
+    /// <summary>演奏時間のテキスト表示（例: "P:2ndHL", "P:Full"）。TotalSecondsが0の種目用。</summary>
+    [JsonProperty("PlayTimeLabel")]  public string? PlayTimeLabel  { get; set; }
     [JsonProperty("ErrorMessage")]   public string? ErrorMessage   { get; set; }
 }
